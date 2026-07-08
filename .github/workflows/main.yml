@@ -39,7 +39,7 @@ concurrency:
   
 env:
   NODE_VERSION: "22"
-  IMAGE_NAME: zomato
+  IMAGE_NAME: dutt26/zomato
   IMAGE_TAG: ${{ github.sha }}
   REPO: nodejsimage
  
@@ -301,7 +301,10 @@ jobs:
 #  Push Image
     - name: Push Docker Image
       run: |
-        docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USER }}/${{ env.REPO }}
+        # Tag the image with the repository and the specific tag
+        docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USER }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}
+        
+        # Push that specific tagged image
         docker push ${{ secrets.DOCKER_USER }}/${{ env.REPO }}:${{ env.IMAGE_TAG }}
 
 # Verify Container Starts

@@ -32,7 +32,7 @@ pipeline {
         stage("SonarQube Analysis") {
     steps {
         script {
-            withSonarQubeEnv('sonar-server') {
+            withSonarQubeEnv('mysonar') {
                 sh 'mvn clean verify sonar:sonar' 
             }
             // Jenkins hangs here waiting for a webhook that doesn't exist

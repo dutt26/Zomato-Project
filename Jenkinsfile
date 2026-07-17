@@ -29,17 +29,20 @@ pipeline {
             }
         }
         
-        stage("Sonarqube Analysis") {
-            steps {
-                withSonarQubeEnv('mysonar') { 
-                    sh """$SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectName=zomato \
-                    -Dsonar.projectKey=zomato \
-                    -Dsonar.sources=. \
-                    -Dsonar.exclusions=**/node_modules/**"""
-                }
+        stage("SonarQube Analysis") {
+    steps {
+        script {
+            withSonarQubeEnv('sonar-server') {
+                sh 'mvn clean verify sonar:sonar' 
             }
-        }
+            // Jenkins hangs here waiting for a webhook that doesn't exist
+            def qg = waitForQualityGate() 
+            if (qg.status != 'OK') {
+                error "Pipeline aborted due to quality gate failure"
+            }
+         }
+      }
+    }
         
         stage("Quality Gates") {
             steps {
